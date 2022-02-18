@@ -7,6 +7,8 @@ import br.com.alura.forum.dtos.topico.TopicoForm;
 import br.com.alura.forum.models.Topico;
 import br.com.alura.forum.repositories.CursoRepository;
 import br.com.alura.forum.repositories.TopicoRepository;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +24,8 @@ import java.util.Optional;
 @AllArgsConstructor
 @RestController
 @RequestMapping("/topicos")
+@Api(value = "API REST Fórum de Tira-Dúvias de um Curso de Programação")
+@CrossOrigin(origins = "*")
 public class TopicoController {
 
     private final TopicoRepository topicoRepository;
@@ -29,6 +33,7 @@ public class TopicoController {
 
     @PostMapping
     @Transactional
+    @ApiOperation(value = "Cadastra um Tópico")
     public ResponseEntity<TopicoDto> cadastraTopico(@RequestBody @Valid TopicoForm form, UriComponentsBuilder
             uriComponentsBuilder) {
 
@@ -42,6 +47,7 @@ public class TopicoController {
     }
 
     @GetMapping
+    @ApiOperation(value = "Lista todos os Tópicos")
     public List<TopicoDto> listaTopicos(String nomeCurso) {
 
         if (nomeCurso == null) {
@@ -57,6 +63,7 @@ public class TopicoController {
     }
 
     @GetMapping("/{id}")
+    @ApiOperation(value = "Busca um Tópico detalhado")
     public ResponseEntity<DetalhesTopicoDto> buscaTopicoDetalhado(@PathVariable Long id) {
 
         Optional<Topico> topico = topicoRepository.findById(id);
@@ -72,6 +79,7 @@ public class TopicoController {
 
     @PutMapping("/{id}")
     @Transactional
+    @ApiOperation(value = "Atualiza um Tópico")
     public ResponseEntity<TopicoDto> atualizaTopico(@RequestBody @Valid AtualizacaoTopicoForm form,
                                                     @PathVariable Long id) {
 
@@ -90,6 +98,7 @@ public class TopicoController {
 
     @DeleteMapping("/{id}")
     @Transactional
+    @ApiOperation(value = "Remove um Tópico")
     public ResponseEntity<?> removeTopico(@PathVariable Long id) {
 
         Optional<Topico> topico = topicoRepository.findById(id);

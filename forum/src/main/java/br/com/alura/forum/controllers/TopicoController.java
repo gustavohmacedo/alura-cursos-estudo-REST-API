@@ -10,6 +10,10 @@ import br.com.alura.forum.repositories.TopicoRepository;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,7 +22,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.List;
 import java.util.Optional;
 
 @AllArgsConstructor
@@ -48,16 +51,15 @@ public class TopicoController {
 
     @GetMapping
     @ApiOperation(value = "Lista todos os Tópicos")
-    public List<TopicoDto> listaTopicos(String nomeCurso) {
+    public Page<TopicoDto> listaTopicos(@RequestParam(required = false) String nomeCurso, @PageableDefault(sort = "id",
+            direction = Sort.Direction.ASC, page = 0, size = 5) Pageable paginacao) {
 
         if (nomeCurso == null) {
-            List<Topico> topicos = topicoRepository.findAll();
-
+            Page<Topico> topicos = topicoRepository.findAll(paginacao);
             return TopicoDto.converter(topicos);
 
         } else {
-            List<Topico> topicos = topicoRepository.findByCursoNome(nomeCurso);
-
+            Page<Topico> topicos = topicoRepository.findByCursoNome(nomeCurso, paginacao);
             return TopicoDto.converter(topicos);
         }
     }

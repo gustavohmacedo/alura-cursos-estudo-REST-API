@@ -10,6 +10,8 @@ import br.com.alura.forum.repositories.TopicoRepository;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -34,9 +36,10 @@ public class TopicoController {
     private final TopicoRepository topicoRepository;
     private final CursoRepository cursoRepository;
 
+    @ApiOperation(value = "Cadastra um Tópico")
     @PostMapping
     @Transactional
-    @ApiOperation(value = "Cadastra um Tópico")
+    @CacheEvict(value = "listaDeTopicos", allEntries = true)
     public ResponseEntity<TopicoDto> cadastraTopico(@RequestBody @Valid TopicoForm form, UriComponentsBuilder
             uriComponentsBuilder) {
 
@@ -49,8 +52,9 @@ public class TopicoController {
         return ResponseEntity.created(uri).body(new TopicoDto(topico));
     }
 
-    @GetMapping
     @ApiOperation(value = "Lista todos os Tópicos")
+    @GetMapping
+    @Cacheable(value = "listaDeTopicos")
     public Page<TopicoDto> listaTopicos(@RequestParam(required = false) String nomeCurso, @PageableDefault(sort = "id",
             direction = Sort.Direction.ASC, page = 0, size = 5) Pageable paginacao) {
 
@@ -64,8 +68,8 @@ public class TopicoController {
         }
     }
 
-    @GetMapping("/{id}")
     @ApiOperation(value = "Busca um Tópico detalhado")
+    @GetMapping("/{id}")
     public ResponseEntity<DetalhesTopicoDto> buscaTopicoDetalhado(@PathVariable Long id) {
 
         Optional<Topico> topico = topicoRepository.findById(id);
@@ -79,9 +83,10 @@ public class TopicoController {
 
     }
 
+    @ApiOperation(value = "Atualiza um Tópico")
     @PutMapping("/{id}")
     @Transactional
-    @ApiOperation(value = "Atualiza um Tópico")
+    @CacheEvict(value = "listaDeTopicos", allEntries = true)
     public ResponseEntity<TopicoDto> atualizaTopico(@RequestBody @Valid AtualizacaoTopicoForm form,
                                                     @PathVariable Long id) {
 
@@ -98,9 +103,10 @@ public class TopicoController {
 
     }
 
+    @ApiOperation(value = "Remove um Tópico")
     @DeleteMapping("/{id}")
     @Transactional
-    @ApiOperation(value = "Remove um Tópico")
+    @CacheEvict(value = "listaDeTopicos", allEntries = true)
     public ResponseEntity<?> removeTopico(@PathVariable Long id) {
 
         Optional<Topico> topico = topicoRepository.findById(id);

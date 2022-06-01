@@ -7,8 +7,8 @@ import br.com.alura.forum.dtos.topico.TopicoForm;
 import br.com.alura.forum.models.Topico;
 import br.com.alura.forum.repositories.CursoRepository;
 import br.com.alura.forum.repositories.TopicoRepository;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+//import io.swagger.annotations.Api;
+//import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -29,14 +29,14 @@ import java.util.Optional;
 @AllArgsConstructor
 @RestController
 @RequestMapping("/topicos")
-@Api(value = "API REST Fórum de Tira-Dúvias de um Curso de Programação")
+//@Api(value = "API REST Fórum de Tira-Dúvias de um Curso de Programação")
 @CrossOrigin(origins = "*")
 public class TopicoController {
 
     private final TopicoRepository topicoRepository;
     private final CursoRepository cursoRepository;
 
-    @ApiOperation(value = "Cadastra um Tópico")
+//    @ApiOperation(value = "Cadastra um Tópico")
     @PostMapping
     @Transactional
     @CacheEvict(value = "listaDeTopicos", allEntries = true)
@@ -52,7 +52,7 @@ public class TopicoController {
         return ResponseEntity.created(uri).body(new TopicoDto(topico));
     }
 
-    @ApiOperation(value = "Lista todos os Tópicos")
+//    @ApiOperation(value = "Lista todos os Tópicos")
     @GetMapping
     @Cacheable(value = "listaDeTopicos")
     public Page<TopicoDto> listaTopicos(@RequestParam(required = false) String nomeCurso, @PageableDefault(sort = "id",
@@ -68,7 +68,7 @@ public class TopicoController {
         }
     }
 
-    @ApiOperation(value = "Busca um Tópico detalhado")
+//    @ApiOperation(value = "Busca um Tópico detalhado")
     @GetMapping("/{id}")
     public ResponseEntity<DetalhesTopicoDto> buscaTopicoDetalhado(@PathVariable Long id) {
 
@@ -83,7 +83,7 @@ public class TopicoController {
 
     }
 
-    @ApiOperation(value = "Atualiza um Tópico")
+//    @ApiOperation(value = "Atualiza um Tópico")
     @PutMapping("/{id}")
     @Transactional
     @CacheEvict(value = "listaDeTopicos", allEntries = true)
@@ -103,7 +103,7 @@ public class TopicoController {
 
     }
 
-    @ApiOperation(value = "Remove um Tópico")
+//    @ApiOperation(value = "Remove um Tópico")
     @DeleteMapping("/{id}")
     @Transactional
     @CacheEvict(value = "listaDeTopicos", allEntries = true)
